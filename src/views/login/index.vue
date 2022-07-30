@@ -1,19 +1,15 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-
-      <div class="title-container">
-        <h3 class="title">Login Form</h3>
-      </div>
-
+      <img src="http://likede2-admin.itheima.net/img/logo.595745bd.png" alt="" class="login-logo">
       <el-form-item prop="username">
         <span class="svg-container">
-          <svg-icon icon-class="user" />
+          <i class="el-icon-mobile-phone" />
         </span>
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          placeholder="请输入用户名"
           name="username"
           type="text"
           tabindex="1"
@@ -23,14 +19,14 @@
 
       <el-form-item prop="password">
         <span class="svg-container">
-          <svg-icon icon-class="password" />
+          <i class="el-icon-lock" />
         </span>
         <el-input
           :key="passwordType"
           ref="password"
           v-model="loginForm.password"
           :type="passwordType"
-          placeholder="Password"
+          placeholder="请输入密码"
           name="password"
           tabindex="2"
           auto-complete="on"
@@ -40,23 +36,38 @@
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
+      <el-form-item prop="code" class="form_code">
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+        <div class="code_left">
+          <span class="svg-container">
+            <i class="el-icon-attract" />
+          </span>
+          <el-input
+            ref="username"
+            v-model="loginForm.code"
+            placeholder="请输入验证码"
+            name="code"
+            tabindex="3"
+            auto-complete="on"
+          /><div class="code_right" @click="changeCode">
+            <Identify :identify-code="identifyCode" />
+          </div>
+        </div>
 
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
-      </div>
+      </el-form-item>
 
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
   </div>
 </template>
 
 <script>
 import { validUsername } from '@/utils/validate'
+import Identify from '@/components/Vertify/identify.vue'
 
 export default {
   name: 'Login',
+  components: { Identify },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
@@ -75,8 +86,12 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '111111'
+        password: '111111',
+        code: '',
+        flag: 2
       },
+      identifyCode: 'wd3f',
+      identifyCodes: 'sdfrgf2345',
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
@@ -93,6 +108,10 @@ export default {
       },
       immediate: true
     }
+  },
+  mounted() {
+    this.identifyCode = ''
+    this.makeCode(this.identifyCodes, 4)
   },
   methods: {
     showPwd() {
@@ -120,6 +139,22 @@ export default {
           return false
         }
       })
+    },
+    // 点击验证码刷新验证码
+    changeCode() {
+      this.identifyCode = ''
+      this.makeCode(this.identifyCodes, 4)
+    },
+    // 生成一个随机整数  randomNum(0, 10) 0 到 10 的随机整数， 包含 0 和 10
+    randomNum(min, max) {
+      max = max + 1
+      return Math.floor(Math.random() * (max - min) + min)
+    },
+    // 随机生成验证码字符串
+    makeCode(data, len) {
+      for (let i = 0; i < len; i++) {
+        this.identifyCode += data[this.randomNum(0, data.length - 1)]
+      }
     }
   }
 }
@@ -140,6 +175,13 @@ $cursor: #fff;
 }
 
 /* reset element-ui css */
+.el-input__inner{
+  color: #999 !important;
+  }
+.el-form-item__content{
+  background-color: #fff;
+  border: 1px solid #e3e3e3;
+}
 .login-container {
   .el-input {
     display: inline-block;
@@ -154,7 +196,7 @@ $cursor: #fff;
       padding: 12px 5px 12px 15px;
       color: $light_gray;
       height: 47px;
-      caret-color: $cursor;
+      caret-color: #999;
 
       &:-webkit-autofill {
         box-shadow: 0 0 0px 1000px $bg inset !important;
@@ -173,23 +215,55 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
 $dark_gray:#889aa4;
 $light_gray:#eee;
 
+.login-container .el-form-item{
+  border: unset;
+}
+.code_left{
+  display: flex;
+  align-items: center;
+}
 .login-container {
+  position: relative;
   min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  background:url('../../assets/images/bg.png');
+  background-repeat: no-repeat;
+  background-size: cover;
   overflow: hidden;
 
   .login-form {
-    position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
-    overflow: hidden;
+    position: absolute;
+    width: 518px;
+    height: 388px;
+    left: 50%;
+    top: 50%;
+    margin-top: -194px;
+    margin-left: -259px;
+    padding: 76px 35px 0;
+    box-shadow: 0 3px 70px 0 rgb(30 111 72 / 35%);
+    border-radius: 10px;
+    background-color: #fff;
+    .login-logo{
+      position: absolute;
+      width: 96px;
+      height: 96px;
+      top: -46px;
+      left: 50%;
+      margin-left: -48px;
+      border-style: none;
+    }
+  }
+  .el-button--primary{
+    width: 100%;
+    height: 52px;
+    background: linear-gradient(262deg,hsl(229deg 75% 53%),hsl(233deg 82% 67%));
+    opacity: .91;
+    border-radius: 8px;
+    color: hsl(0deg 0% 100%);
+    text-shadow: 0 7px 22px #cfcfcf;
   }
 
   .tips {
@@ -209,6 +283,7 @@ $light_gray:#eee;
     color: $dark_gray;
     vertical-align: middle;
     width: 30px;
+    font-size: 16px;
     display: inline-block;
   }
 
