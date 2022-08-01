@@ -1,24 +1,14 @@
-import request from '@/utils/request'
+import request from "@/utils/request";
 
+/**
+ * 用户登录接口
+ * @param {Object} data loginName password
+ * @returns promise
+ */
 export function login(data) {
   return request({
-    url: '/vue-admin-template/user/login',
-    method: 'post',
-    data
-  })
-}
-
-export function getInfo(token) {
-  return request({
-    url: '/vue-admin-template/user/info',
-    method: 'get',
-    params: { token }
-  })
-}
-
-export function logout() {
-  return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
-  })
+    url: "/user-service/user/login",
+    method: "post",
+    data,
+  });
 }

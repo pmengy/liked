@@ -1,14 +1,25 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-      <img src="http://likede2-admin.itheima.net/img/logo.595745bd.png" alt="" class="login-logo">
+    <el-form
+      ref="loginForm"
+      :model="loginForm"
+      :rules="loginRules"
+      class="login-form"
+      auto-complete="on"
+      label-position="left"
+    >
+      <img
+        src="http://likede2-admin.itheima.net/img/logo.595745bd.png"
+        alt=""
+        class="login-logo"
+      />
       <el-form-item prop="username">
         <span class="svg-container">
           <i class="el-icon-mobile-phone" />
         </span>
         <el-input
           ref="username"
-          v-model="loginForm.username"
+          v-model="loginForm.loginName"
           placeholder="请输入用户名"
           name="username"
           type="text"
@@ -33,14 +44,15 @@
           @keyup.enter.native="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          <svg-icon
+            :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+          />
         </span>
       </el-form-item>
       <el-form-item prop="code" class="form_code">
-
         <div class="code_left">
           <span class="svg-container">
-            <i class="el-icon-attract" />
+            <svg-icon icon-class="auth" />
           </span>
           <el-input
             ref="username"
@@ -49,123 +61,186 @@
             name="code"
             tabindex="3"
             auto-complete="on"
-          /><div class="code_right" @click="changeCode">
-            <Identify :identify-code="identifyCode" />
+          />
+          <div class="code_right" @click="changeImageCode">
+            <img src="" alt="" ref='img' />
           </div>
         </div>
-
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
+      <el-button
+        :loading="loading"
+        type="primary"
+        style="width: 100%; margin-bottom: 30px"
+        @click.native.prevent="login"
+        >登录</el-button
+      >
     </el-form>
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
-import Identify from '@/components/Vertify/identify.vue'
-
+import { getImageCode } from "@/api/login";
 export default {
-  name: 'Login',
-  components: { Identify },
+  name: "Login",
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111',
-        code: '',
-        flag: 2
+        loginName: "admin",
+        password: "admin",
+        code: "",
+        clientToken: "",
+        loginType: 0,
       },
-      identifyCode: 'wd3f',
-      identifyCodes: 'sdfrgf2345',
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        loginName: [
+          { required: true, message: "用户名不能为空", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "密码不能为空", trigger: "blur" },
+        ],
+        code: [
+          { required: true, message: "验证码不能为空", trigger: "blur" },
+          {
+            pattern: /^[0-9a-zA-Z]{4}$/,
+            message: "验证码不规范",
+            trigger: "blur",
+          },
+        ],
       },
       loading: false,
-      passwordType: 'password',
-      redirect: undefined
-    }
+      passwordType: "password",
+      redirect: undefined,
+    };
+  },
+  created() {
+    this.getNum();
+    this.getImageCode();
   },
   watch: {
     $route: {
-      handler: function(route) {
-        this.redirect = route.query && route.query.redirect
+      handler: function (route) {
+        this.redirect = route.query && route.query.redirect;
       },
-      immediate: true
-    }
-  },
-  mounted() {
-    this.identifyCode = ''
-    this.makeCode(this.identifyCodes, 4)
+      immediate: true,
+    },
   },
   methods: {
+    // 点击验证码切换
+    changeImageCode() {
+      this.getNum();
+      this.getImageCode();
+    },
+    // 获取验证码
+    async getImageCode() {
+      const res = await getImageCode(this.loginForm.clientToken);
+      this.$refs.img.src=res.request.responseURL
+    },
+    // 生成随机数
+    getNum() {
+      const chars = [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+      ];
+      let num = "";
+      for (let i = 0; i < 32; i++) {
+        let id = parseInt(Math.random() * 61);
+        num += chars[id];
+      }
+      this.loginForm.clientToken = num;
+    },
     showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
+      if (this.passwordType === "password") {
+        this.passwordType = "";
       } else {
-        this.passwordType = 'password'
+        this.passwordType = "password";
       }
       this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
+        this.$refs.password.focus();
+      });
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    // 点击验证码刷新验证码
-    changeCode() {
-      this.identifyCode = ''
-      this.makeCode(this.identifyCodes, 4)
-    },
-    // 生成一个随机整数  randomNum(0, 10) 0 到 10 的随机整数， 包含 0 和 10
-    randomNum(min, max) {
-      max = max + 1
-      return Math.floor(Math.random() * (max - min) + min)
-    },
-    // 随机生成验证码字符串
-    makeCode(data, len) {
-      for (let i = 0; i < len; i++) {
-        this.identifyCode += data[this.randomNum(0, data.length - 1)]
+    // 登录
+    async login() {
+      try {
+        this.loading = true;
+        await this.$refs.loginForm.validate();
+        this.$store.dispatch("user/getToken", this.loginForm);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        this.loading = false;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg:#283443;
-$light_gray:#fff;
+$bg: #283443;
+$light_gray: #fff;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
@@ -175,10 +250,10 @@ $cursor: #fff;
 }
 
 /* reset element-ui css */
-.el-input__inner{
+.el-input__inner {
   color: #999 !important;
-  }
-.el-form-item__content{
+}
+.el-form-item__content {
   background-color: #fff;
   border: 1px solid #e3e3e3;
 }
@@ -215,21 +290,29 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$dark_gray:#889aa4;
-$light_gray:#eee;
+$dark_gray: #889aa4;
+$light_gray: #eee;
 
-.login-container .el-form-item{
+.code_right {
+  img {
+    width: 130px;
+    height: 50px;
+  }
+}
+::v-deep .el-form-item__content {
+  height: 50px;
+}
+.login-container .el-form-item {
   border: unset;
 }
-.code_left{
+.code_left {
   display: flex;
-  align-items: center;
 }
 .login-container {
   position: relative;
   min-height: 100%;
   width: 100%;
-  background:url('../../assets/images/bg.png');
+  background: url("../../assets/images/bg.png");
   background-repeat: no-repeat;
   background-size: cover;
   overflow: hidden;
@@ -246,7 +329,7 @@ $light_gray:#eee;
     box-shadow: 0 3px 70px 0 rgb(30 111 72 / 35%);
     border-radius: 10px;
     background-color: #fff;
-    .login-logo{
+    .login-logo {
       position: absolute;
       width: 96px;
       height: 96px;
@@ -256,11 +339,15 @@ $light_gray:#eee;
       border-style: none;
     }
   }
-  .el-button--primary{
+  .el-button--primary {
     width: 100%;
     height: 52px;
-    background: linear-gradient(262deg,hsl(229deg 75% 53%),hsl(233deg 82% 67%));
-    opacity: .91;
+    background: linear-gradient(
+      262deg,
+      hsl(229deg 75% 53%),
+      hsl(233deg 82% 67%)
+    );
+    opacity: 0.91;
     border-radius: 8px;
     color: hsl(0deg 0% 100%);
     text-shadow: 0 7px 22px #cfcfcf;
