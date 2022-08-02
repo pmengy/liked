@@ -4,15 +4,11 @@ import router from "@/router";
 export default {
   namespaced: true,
   state: {
-    token: "",
-    success: "",
-    msg: "",
+    token: {},
   },
   mutations: {
     setToken(state, payload) {
-      state.token = payload.token;
-      state.success = payload.success;
-      state.msg = payload.msg;
+      state.token = payload;
     },
   },
   actions: {
