@@ -1,14 +1,18 @@
-import { login } from "@/api/user";
+import { login, getUserInfo } from "@/api/user";
 import { Message } from "element-ui";
 import router from "@/router";
 export default {
   namespaced: true,
   state: {
     token: {},
+    userInfo: {},
   },
   mutations: {
     setToken(state, payload) {
       state.token = payload;
+    },
+    setUserInfo(state, payload) {
+      state.userInfo = payload;
     },
   },
   actions: {
@@ -21,6 +25,10 @@ export default {
       } else {
         Message.error(res.data.msg);
       }
+    },
+    async getUserInfo({ commit }, payload) {
+      const res = await getUserInfo(payload);
+      commit("setUserInfo", res.data);
     },
   },
 };
