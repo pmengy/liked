@@ -4,7 +4,7 @@ import router from "@/router";
 import { getTokenTime } from "./auth";
 import { Message } from "element-ui";
 
-// create an axios instance
+
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
   timeout: 5000,
@@ -17,6 +17,7 @@ function isTimeout() {
   return currentTime - tokenTime > timeout;
 }
 
+// 请求拦截器
 service.interceptors.request.use(async (config) => {
   if (store.state.user.token.token) {
     if (isTimeout()) {
@@ -28,7 +29,9 @@ service.interceptors.request.use(async (config) => {
     }
   }
   return config;
-}); // 请求拦截器
+}); 
+
+// 响应拦截器
 service.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -41,5 +44,5 @@ service.interceptors.response.use(
     }
     return Promise.reject(error);
   }
-); // 响应拦截器
+); 
 export default service;
