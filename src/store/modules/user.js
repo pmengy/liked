@@ -1,6 +1,7 @@
 import { login, getUserInfo } from "@/api/user";
 import { Message } from "element-ui";
 import router from "@/router";
+import { setTokenTime } from "@/utils/auth";
 export default {
   namespaced: true,
   state: {
@@ -22,6 +23,7 @@ export default {
         commit("setToken", res.data);
         router.push("/");
         Message.success(res.data.msg);
+        setTokenTime();
       } else {
         Message.error(res.data.msg);
       }
@@ -29,6 +31,10 @@ export default {
     async getUserInfo({ commit }, payload) {
       const res = await getUserInfo(payload);
       commit("setUserInfo", res.data);
+    },
+    logout({ commit }) {
+      commit("setToken", {});
+      commit("setUserInfo", {});
     },
   },
 };

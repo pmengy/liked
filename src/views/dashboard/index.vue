@@ -5,17 +5,18 @@
 </template>
 
 <script>
-
 export default {
-  name: 'home',
-  computed: {
-  }
-}
+  name: "home",
+  computed: {},
+};
 </script>
 
 <style lang="scss" scoped>
 .dashboard {
   &-container {
+    position: relative;
+    left: 0;
+    top: 50px;
     margin: 30px;
     padding-top: 60px;
   }

@@ -1,26 +1,22 @@
 <template>
   <div class="navbar">
-    <!-- <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" /> -->
-
-    <!-- <breadcrumb class="breadcrumb-container" /> -->
-
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img
-            :src="
-              $store.state.user.userInfo.img ||
-              'https://lkd2-java.itheima.net/image/avatar.png'
-            "
+            :src="$store.state.user.userInfo.image || defaultImg"
             class="user-avatar"
+            v-errorImg="defaultImg"
           />
-          <span class="userName"
-            >欢迎您，{{ $store.state.user.token.userName }}</span
-          >
-          <span style="font-size: 16px"
-            >退出<i class="el-icon-caret-bottom"></i
-          ></span>
+          <span class="userName">欢迎您，{{ $store.state.user.userInfo.userName }}</span>
+          <span>退出</span>
+          <i class="el-icon-caret-bottom" />
         </div>
+        <el-dropdown-menu slot="dropdown" class="user-dropdown">
+          <el-dropdown-item divided @click.native="logout">
+            <span style="display: block">登出</span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
       </el-dropdown>
     </div>
   </div>
@@ -30,6 +26,11 @@
 import { mapGetters } from "vuex";
 
 export default {
+  data() {
+    return {
+      defaultImg: "https://lkd2-java.itheima.net/image/avatar.png",
+    };
+  },
   computed: {
     ...mapGetters(["sidebar", "avatar"]),
   },
@@ -40,6 +41,7 @@ export default {
     async logout() {
       await this.$store.dispatch("user/logout");
       this.$router.push(`/login?redirect=${this.$route.fullPath}`);
+      this.$message.success("退出登录成功");
     },
   },
 };
@@ -109,6 +111,7 @@ export default {
         display: flex;
         align-items: center;
         margin-top: 8px;
+        font-size: 16px;
 
         .user-avatar {
           cursor: pointer;
