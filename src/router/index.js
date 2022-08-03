@@ -6,30 +6,6 @@ Vue.use(Router);
 /* Layout */
 import Layout from "@/layout";
 
-/**
- * Note: sub-menu only appear when route children.length >= 1
- * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
- *
- * hidden: true                   if set true, item will not show in the sidebar(default is false)
- * alwaysShow: true               if set true, will always show the root menu
- *                                if not set alwaysShow, when item has more than one children route,
- *                                it will becomes nested mode, otherwise not show the root menu
- * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
- * name:'router-name'             the name is used by <keep-alive> (must set!!!)
- * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
-    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
-    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
-    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
-  }
- */
-
-/**
- * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
- */
 export const constantRoutes = [
   {
     path: "/login",
@@ -67,14 +43,14 @@ export const constantRoutes = [
       {
         path: "/task/business",
         name: "business",
-        component: () => import("@/views/table/index"),
+        component: () => import("@/views/business/index"),
         meta: { title: "运营工单" },
       },
       {
         path: "/task/operation",
         name: "operation",
-        component: () => import("@/views/tree/index"),
-        meta: { title: "运维工单"},
+        component: () => import("@/views/operation/index"),
+        meta: { title: "运维工单" },
       },
     ],
   },
@@ -88,20 +64,20 @@ export const constantRoutes = [
       {
         path: "region",
         name: "region",
-        component: () => import("@/views/form/index"),
-        meta: { title: "区域管理"},
+        component: () => import("@/views/region/index"),
+        meta: { title: "区域管理" },
       },
       {
         path: "node",
         name: "node",
-        component: () => import("@/views/form/index"),
-        meta: { title: "点位管理"},
+        component: () => import("@/views/node/index"),
+        meta: { title: "点位管理" },
       },
       {
         path: "partner",
         name: "partner",
-        component: () => import("@/views/form/index"),
-        meta: { title: "合作商管理"},
+        component: () => import("@/views/partner/index"),
+        meta: { title: "合作商管理" },
       },
     ],
   },
@@ -110,7 +86,7 @@ export const constantRoutes = [
     path: "/vm",
     component: Layout,
     redirect: "/vm/index",
-    name: "Nested",
+    name: "vm",
     meta: {
       title: "设备管理",
       icon: "vm",
@@ -118,19 +94,19 @@ export const constantRoutes = [
     children: [
       {
         path: "index",
-        component: () => import("@/views/nested/menu1/index"), // Parent router-view
+        component: () => import("@/views/vm/index"),
         name: "index",
         meta: { title: "设备管理" },
       },
       {
         path: "status",
-        component: () => import("@/views/nested/menu2/index"),
+        component: () => import("@/views/status/index"),
         name: "status",
         meta: { title: "设备状态" },
       },
       {
         path: "type",
-        component: () => import("@/views/nested/menu2/index"),
+        component: () => import("@/views/type/index"),
         name: "type",
         meta: { title: "设备类型管理" },
       },
@@ -140,7 +116,7 @@ export const constantRoutes = [
     path: "/user",
     component: Layout,
     redirect: "/user/index",
-    name: "Nested",
+    name: "user",
     meta: {
       title: "人员管理",
       icon: "userM",
@@ -148,19 +124,19 @@ export const constantRoutes = [
     children: [
       {
         path: "index",
-        component: () => import("@/views/nested/menu1/index"), // Parent router-view
+        component: () => import("@/views/user/index"),
         name: "index",
         meta: { title: "人员列表" },
       },
       {
         path: "user-task-stats",
-        component: () => import("@/views/nested/menu2/index"),
+        component: () => import("@/views/task-stats/index"),
         name: "user-task-stats",
         meta: { title: "人效统计" },
       },
       {
         path: "user-work",
-        component: () => import("@/views/nested/menu2/index"),
+        component: () => import("@/views/user-work/index"),
         name: "user-work",
         meta: { title: "工作量列表" },
       },
@@ -178,44 +154,65 @@ export const constantRoutes = [
     children: [
       {
         path: "sku-class",
-        component: () => import("@/views/nested/menu1/index"), // Parent router-view
+        component: () => import("@/views/sku-class/index"),
         name: "sku-class",
         meta: { title: "商品类型" },
       },
       {
         path: "sku",
-        component: () => import("@/views/nested/menu2/index"),
+        component: () => import("@/views/sku/index"),
         name: "sku",
         meta: { title: "商品管理" },
       },
     ],
   },
   {
-    path: "/policy/index",
+    path: "/policy",
     component: Layout,
     name: "policy",
-    meta: {
-      title: "策略管理",
-      icon: "policy",
-    },
+    redirect: "/policy/index",
+    children: [
+      {
+        path: "index",
+        component: () => import("@/views/policy/index"),
+        meta: {
+          title: "策略管理",
+          icon: "policy",
+        },
+      },
+    ],
   },
   {
-    path: "/order/index",
+    path: "/order",
     component: Layout,
     name: "order",
-    meta: {
-      title: "订单管理",
-      icon: "order",
-    },
+    redirect: "/order/index",
+    children: [
+      {
+        path: "index",
+        component: () => import("@/views/order/index"),
+        meta: {
+          title: "订单管理",
+          icon: "order",
+        },
+      },
+    ],
   },
   {
-    path: "/report/index",
+    path: "/report",
     component: Layout,
     name: "report",
-    meta: {
-      title: "对账记录",
-      icon: "report",
-    },
+    redirect: "/report/index",
+    children: [
+      {
+        path: "index",
+        component: () => import("@/views/report/index"),
+        meta: {
+          title: "对账记录",
+          icon: "report",
+        },
+      },
+    ],
   },
   // 404 page must be placed at the end !!!
   { path: "*", redirect: "/404", hidden: true },
