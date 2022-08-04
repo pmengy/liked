@@ -1,14 +1,11 @@
 #app {
   .main-container {
     min-height: 100%;
-    transition: margin-left 0.28s;
-    margin-left: $sideBarWidth;
+    margin-left: 170px;
     position: relative;
   }
-
   .sidebar-container {
-    transition: width 0.28s;
-    width: 210px !important;
+    width: 170px !important;
     background-color: #fff;
     height: 100%;
     position: fixed;
@@ -39,7 +36,7 @@
 
     &.has-logo {
       .el-scrollbar {
-        height: calc(100% - 50px);
+        height: calc(100% - 60px);
       }
     }
 
@@ -84,10 +81,10 @@
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
-      color: #999 !important;
-      &:hover {
-        background-color: $subMenuHover !important;
-      }
+      color: #999;
+      // &:hover {
+      //   background-color: $subMenuHover !important;
+      // }
     }
   }
 
@@ -196,13 +193,13 @@
     }
   }
 
-  .nest-menu .el-submenu > .el-submenu__title,
-  .el-menu-item {
-    &:hover {
-      // you can use $subMenuHover
-      background-color: $menuHover !important;
-    }
-  }
+  // .nest-menu .el-submenu > .el-submenu__title,
+  // .el-menu-item {
+  //   &:hover {
+  //     // you can use $subMenuHover
+  //     background-color: $menuHover !important;
+  //   }
+  // }
 
   // the scroll bar appears when the subMenu is too long
   > .el-menu--popup {
@@ -210,11 +207,12 @@
     overflow-y: auto;
 
     &::-webkit-scrollbar-track-piece {
-      background: #d3dce6;
+      background: #fff;
     }
 
     &::-webkit-scrollbar {
-      width: 6px;
+      width: 1px;
+      color: #fff;
     }
 
     &::-webkit-scrollbar-thumb {

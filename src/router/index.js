@@ -41,13 +41,13 @@ export const constantRoutes = [
     meta: { title: "工单管理", icon: "task" },
     children: [
       {
-        path: "/task/business",
+        path: "business",
         name: "business",
         component: () => import("@/views/business/index"),
         meta: { title: "运营工单" },
       },
       {
-        path: "/task/operation",
+        path: "operation",
         name: "operation",
         component: () => import("@/views/operation/index"),
         meta: { title: "运维工单" },
