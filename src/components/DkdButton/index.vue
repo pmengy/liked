@@ -2,6 +2,7 @@
   <button
     :style="{ background: background, color: color }"
     class="myButton"
+    :disabled="disabled"
     @click="$emit('click')"
   >
     <slot>按钮</slot>
@@ -22,6 +23,10 @@ export default {
       type: String,
       default: "#fff",
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   created() {},
 
@@ -35,5 +40,10 @@ export default {
   font-size: 14px;
   border: none;
   border-radius: 4px;
+  &:disabled {
+    cursor: not-allowed;
+    background-color: #edf0f9 !important;
+    color: #d8dde3 !important;
+  }
 }
 </style>

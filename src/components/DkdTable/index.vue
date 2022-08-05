@@ -8,25 +8,18 @@
       height: '42px',
       'font-weight': 400,
     }"
+    :highlight-current-row="true"
   >
-    <el-table-column type="index" label="序号" width="80"> </el-table-column>
-    <el-table-column prop="taskCode" label="工单编号" width="118">
-    </el-table-column>
-    <el-table-column prop="innerCode" label="设备编号" width="130">
-    </el-table-column>
-    <el-table-column prop="taskType.typeName" label="工单类型" width="136">
-    </el-table-column>
-    <el-table-column prop="taskType.type" label="工单方式" width="130">
+    <el-table-column type="index" :index="indexMethod" label="序号" width="80">
     </el-table-column>
     <el-table-column
-      prop="taskStatusTypeEntity.statusName"
-      label="工单状态"
-      width="136"
+      v-for="(item, index) in tableLabel"
+      :key="index"
+      :prop="item.prop"
+      :width="item.width"
+      :label="item.label"
+      :formatter="formatData"
     >
-    </el-table-column>
-    <el-table-column prop="userName" label="运营人员" width="136">
-    </el-table-column>
-    <el-table-column prop="createTime" label="创建日期" width="160">
     </el-table-column>
     <el-table-column label="操作" width="100">
       <template slot-scope="scope">
@@ -37,21 +30,44 @@
 </template>
 
 <script>
+import dayjs from "dayjs";
 export default {
   data() {
-    return {
-      index: 1,
-    };
+    return {};
   },
   props: {
     currentList: {
       type: Array,
       required: true,
     },
+    tableLabel: {
+      type: Array,
+      default: () => [],
+    },
+    currentIndex: {
+      type: Number,
+      required: true,
+    },
   },
   created() {},
 
-  methods: {},
+  methods: {
+    indexMethod(index) {
+      return parseInt(this.currentIndex) - 9 + index;
+    },
+    formatData(row, column, cellValue) {
+      if (column.property === "createType") {
+        if (cellValue === 1) {
+          return "自动";
+        }
+        return "手动";
+      }
+      if (column.property === "createTime") {
+        return dayjs(cellValue).format("YYYY.MM.DD HH:mm:ss");
+      }
+      return cellValue;
+    },
+  },
 };
 </script>
 

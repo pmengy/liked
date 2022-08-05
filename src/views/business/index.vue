@@ -9,10 +9,13 @@
       >
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item label="工单编号:" class="item">
-            <el-input v-model="formInline.user" placeholder="请输入"></el-input>
+            <el-input
+              v-model="formInline.taskCode"
+              placeholder="请输入"
+            ></el-input>
           </el-form-item>
           <el-form-item label="工单状态:" class="item">
-            <el-select v-model="formInline.region" placeholder="请选择">
+            <el-select v-model="formInline.status" placeholder="请选择">
               <el-option
                 v-for="item in taskStatusList"
                 :key="item.statusId"
@@ -22,7 +25,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <dkd-button>
+            <dkd-button @click="search">
               <span>
                 <svg-icon
                   icon-class="search"
@@ -57,7 +60,32 @@
           >
         </div>
         <!-- 表格 -->
-        <dkd-table :currentList='currentList' />
+        <dkd-table
+          :currentList="currentList"
+          :tableLabel="tableLabel"
+          :currentIndex="pageIndex * 10"
+        />
+        <!-- 分页 -->
+        <div class="Pagination">
+          <p>共{{ totalCount }}条记录 第{{ pageIndex }}/{{ totalPage }}页</p>
+          <p>
+            <DkdButton
+              background="#d5ddf8"
+              :disabled="pageIndex === '1'"
+              color="#606266"
+              style="margin-right: 20px"
+              @click="lastPage"
+              >上一页</DkdButton
+            >
+            <DkdButton
+              :disabled="pageIndex === totalPage"
+              color="#606266"
+              background="#d5ddf8"
+              @click="nextPage"
+              >下一页</DkdButton
+            >
+          </p>
+        </div>
       </el-card>
     </div>
   </div>
@@ -72,11 +100,27 @@ export default {
   data() {
     return {
       formInline: {
-        user: "",
-        region: "",
+        taskCode: "",
+        status: "",
       },
       currentList: [],
       taskStatusList: [],
+      pageIndex: "",
+      totalPage: "",
+      totalCount: "",
+      tableLabel: [
+        { label: "工单编号", width: "118", prop: "taskCode" },
+        { label: "设备编号", width: "130", prop: "innerCode" },
+        { label: "工单类型", width: "136", prop: "taskType.typeName" },
+        { label: "工单方式", width: "130", prop: "createType" },
+        {
+          label: "工单状态",
+          width: "136",
+          prop: "taskStatusTypeEntity.statusName",
+        },
+        { label: "运营人员", width: "136", prop: "userName" },
+        { label: "创建日期", width: "160", prop: "createTime" },
+      ],
     };
   },
   components: { DkdButton, DkdTable },
@@ -86,13 +130,46 @@ export default {
   },
 
   methods: {
+    // 获取全部工单列表
     async searchTasks() {
       const res = await searchTasks();
       this.currentList = res.data.currentPageRecords;
+      this.pageIndex = res.data.pageIndex;
+      this.totalPage = res.data.totalPage;
+      this.totalCount = res.data.totalCount;
     },
+    // 获取工单状态
     async getTaskStatus() {
       const res = await getTaskStatus();
       this.taskStatusList = res.data;
+    },
+    // 获取下一页数据
+    async nextPage() {
+      const res = await searchTasks({
+        pageIndex: parseInt(this.pageIndex) + 1,
+      });
+      this.currentList = res.data.currentPageRecords;
+      this.pageIndex = res.data.pageIndex;
+      this.totalPage = res.data.totalPage;
+      this.totalCount = res.data.totalCount;
+    },
+    // 获取下一页数据
+    async lastPage() {
+      const res = await searchTasks({
+        pageIndex: parseInt(this.pageIndex) - 1,
+      });
+      this.currentList = res.data.currentPageRecords;
+      this.pageIndex = res.data.pageIndex;
+      this.totalPage = res.data.totalPage;
+      this.totalCount = res.data.totalCount;
+    },
+    // 搜索工单
+    async search() {
+      const res = await searchTasks(this.formInline);
+      this.currentList = res.data.currentPageRecords;
+      this.pageIndex = res.data.pageIndex;
+      this.totalPage = res.data.totalPage;
+      this.totalCount = res.data.totalCount;
     },
   },
 };
@@ -113,6 +190,11 @@ export default {
   .el-button--primary {
     background-color: #5f84ff;
   }
+}
+.Pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
 <style>
